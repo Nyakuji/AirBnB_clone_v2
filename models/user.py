@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """This class defines a user by various attributes"""
     __tablename__ = "users"
     email = Column(String(128), nullable=False)
@@ -16,4 +16,3 @@ class User(BaseModel):
     first_name = Column(String(128))
     last_name = Column(String(128))
     places = relationship('Place', backref='user', cascade="delete")
-    
