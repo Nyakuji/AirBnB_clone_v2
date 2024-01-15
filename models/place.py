@@ -19,7 +19,7 @@ association_table = Table("place_amenity", Base.metadata,
                           Column("amenity_id", String(60),
                                  ForeignKey("amenities.id"),
                                  primary_key=True, nullable=False))
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = 'places'
     city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
