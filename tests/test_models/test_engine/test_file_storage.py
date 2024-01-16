@@ -14,6 +14,8 @@ class test_fileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def setUp(self):
         """ Set up test environment """
+        FileStorage._FileStorage__objects = {}
+        
         del_list = []
         for key in storage._FileStorage__objects.keys():
             del_list.append(key)
