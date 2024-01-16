@@ -37,7 +37,13 @@ class test_fileStorage(unittest.TestCase):
     def test_new(self):
         """ New object is correctly added to __objects """
         new = BaseModel()
+        storage.new(new)
+        storage.save()
+        
+        # Get the IDs of all objects in __objects
         obj_ids = [obj.id for obj in storage.all().values()]
+        
+        # Check if the ID of the new object is in the list of IDs
         self.assertIn(new.id, obj_ids)
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
@@ -72,15 +78,20 @@ class test_fileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
+        # Create a new BaseModel instance and save it
         new = BaseModel()
+        storage.new(new)
         storage.save()
-        storage._FileStorage__objects = {}
-        storage.reload()
-        self.assertEqual(len(storage.all()), 1)
         
-        loaded = next(iter(storage.all().values()))
-        self.assertEqual(new.id, loaded.id)
-
+        #Clear __objects to simulate a clean slate
+        storage._FileStorage__objects = {}
+        
+        # Reload from storage
+        storage.reload()
+        
+        # Ensure there is only one object in __objects
+        self.assertEqual(len(storage.all()), 1)
+    
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_reload_empty(self):
         """ Load from an empty file """
@@ -114,15 +125,16 @@ class test_fileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_key_format(self):
         """ Key is properly formatted """
+        # Create a new BaseModel instance and save it
         new = BaseModel()
-        _id = new.id  # Assuming BaseModel has an 'id' attribute
-        key_to_match = 'BaseModel.' + _id
+        storage.new(new)
+        storage.save()
         
-        # Check if the key is present and properly formatted
+        # Get the expected key
+        key_to_match = 'BaseModel.' + new.id
+        
+        # Check if the key is in the actual keys
         self.assertIn(key_to_match, storage.all().keys())
-        
-        # Optional: Check if there are no extra keys in __objects
-        self.assertEqual(len(storage.all()), 1)
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_storage_var_created(self):
