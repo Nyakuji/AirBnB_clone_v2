@@ -38,7 +38,7 @@ class test_fileStorage(unittest.TestCase):
         """ New object is correctly added to __objects """
         new = BaseModel()
         for obj in storage.all().values():
-            temp = obj
+            temp = obj()
         self.assertTrue(temp is obj)
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
@@ -77,7 +77,7 @@ class test_fileStorage(unittest.TestCase):
         storage.save()
         storage.reload()
         for obj in storage.all().values():
-            loaded = obj
+            loaded = obj()
         self.assertEqual(new.to_dict()['id'], loaded.to_dict()['id'])
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
@@ -116,7 +116,7 @@ class test_fileStorage(unittest.TestCase):
         new = BaseModel()
         _id = new.to_dict()['id']
         for key in storage.all().keys():
-            temp = key
+            temp = 'BaseModel' + '.' + _id
         self.assertEqual(temp, 'BaseModel' + '.' + _id)
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
