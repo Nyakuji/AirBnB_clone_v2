@@ -179,11 +179,18 @@ class test_basemodel(unittest.TestCase):
             instance.updated_at.strftime(time_f)
         )
     
-    def save(self):
-        """Updates updated_at with the current time
-        when the instance is changed
+    @mock.patch("models.storage")
+    def test_save(self, mock_storage):
         """
-        self.updated_at = datetime.utcnow()
-        # only when we save the instance, it's written into the json file
-        models.storage.new(self)
-        models.storage.save()
+            test save and update at is working and storage call
+            save
+        """
+        instance = BaseModel()
+        old_value_created = instance.created_at
+        old_value_update = instance.updated_at
+        instance.save()
+        new_value_created = instance.created_at
+        new_value_updated = instance.updated_at
+        self.assertNotEqual(old_value_update, new_value_updated)
+        self.assertEqual(old_value_created, new_value_created)
+        self.assertTrue(mock_storage.save.called)
