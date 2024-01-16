@@ -15,7 +15,7 @@ class test_fileStorage(unittest.TestCase):
     def setUp(self):
         """ Set up test environment """
         FileStorage._FileStorage__objects = {}
-        
+
         del_list = []
         for key in storage._FileStorage__objects.keys():
             del_list.append(key)
@@ -90,9 +90,11 @@ class test_fileStorage(unittest.TestCase):
         storage.reload()
 
         # Ensure that at least one object is loaded
-        loaded = next(iter(storage.all().values()), None)
+        loaded_objects = storage.all().values()
+        self.assertTrue(loaded_objects, "No objects loaded from storage")
+        loaded = next(iter(loaded_objects))
         self.assertIsNotNone(loaded, "No objects loaded from storage")
-    
+        
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_reload_empty(self):
         """ Load from an empty file """
@@ -140,7 +142,7 @@ class test_fileStorage(unittest.TestCase):
         # Ensure that the key is properly formatted
         self.assertNotEqual(temp, "", "Key is not properly formatted")
         self.assertEqual(temp, 'BaseModel.' + _id)
-    
+
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_storage_var_created(self):
         """ FileStorage object storage created """
