@@ -9,7 +9,6 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
-
 class BaseModel:
     """A base class for all hbnb models"""
     id = Column(String(60), primary_key=True, nullable=False)
@@ -34,7 +33,7 @@ class BaseModel:
                     by adding it to method that change object like save
         """
         self.id = str(uuid4())
-        self.created_at =datetime.utcnow()
+        self.created_at = datetime.utcnow()
         self.updated_at = self.created_at
         #  each new instance created is added to the storage variable __objects
         if kwargs:
@@ -44,18 +43,17 @@ class BaseModel:
                                             '%Y-%m-%dT%H:%M:%S.%f')
                     if "__class__" not in key:
                         setattr(self, key, val)
-    
+
     def __str__(self):
         """Returns a string representation of the instance"""
         dictt = self.to_dict()
         cls = (str(type(self)).split('.')[-1]).split('\'')[0]
         return "[{:s}] ({:s}) {}".format(cls, self.id,
                                          dictt)
-    
+
     def save(self):
         """Updates updated_at with current time when instance is changed"""
         self.updated_at = datetime.now()
-        #only when we save the instance, its writen into the json file
         models.storage.new(self)
         models.storage.save()
 
@@ -68,12 +66,11 @@ class BaseModel:
         except Exception:
             pass
         dictionary.update({'__class__':
-                               (str(type(self)).split('.')[-1]).split('\'')[0]})
+                           (str(type(self)).split('.')[-1]).split('\'')[0]})
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
-
         return dictionary
-    
+
     def delete(self):
         """ to delete the current instance from the storage"""
         models.storage.delete(self)

@@ -23,12 +23,11 @@ class test_basemodel(unittest.TestCase):
     def setUp(self):
         """set up for testcase """
         self.model = BaseModel()
-        
 
     def tearDown(self):
         try:
             os.remove('file.json')
-        except:
+        except Exception:
             pass
 
     def test_default(self):
@@ -70,7 +69,7 @@ class test_basemodel(unittest.TestCase):
         """Test for id attribute"""
         new = self.value()
         self.assertEqual(type(new.id), str)
-    
+
     @mock.patch('models.storage')
     def test_instance(self, mock_storage):
         """Testing Base Model Class"""
@@ -92,7 +91,7 @@ class test_basemodel(unittest.TestCase):
         self.assertFalse(mock_storage.new.called)
         self.assertEqual(instance.name, "Philip")
         self.assertEqual(instance.phone, 3838)
-    
+
     def test_uuid(self):
         """Test different UUID for different instances"""
         instance1 = BaseModel()
@@ -101,7 +100,7 @@ class test_basemodel(unittest.TestCase):
         uuid = instance1.id
         with self.subTest(uuid=uuid):
             self.assertIs(type(uuid), str)
-    
+
     def test_datetime(self):
         """Test different instance, different time."""
         tc_before = datetime.utcnow()
@@ -114,7 +113,7 @@ class test_basemodel(unittest.TestCase):
         self.assertEqual(instance1.created_at, instance1.updated_at)
         self.assertNotEqual(instance1.created_at, instance2.created_at)
         self.assertNotEqual(instance1.updated_at, instance2.updated_at)
-    
+
     def test_to_dict(self):
         """Test to_dict method in base model"""
         instance = BaseModel()
@@ -132,18 +131,18 @@ class test_basemodel(unittest.TestCase):
         self.assertEqual(dict_inst['__class__'], 'BaseModel')
         self.assertEqual(dict_inst['name'], "Philip")
         self.assertEqual(dict_inst['num'], 38)
-    
+
     def test_created_at_is_current_time(self):
         """ Test if created_at is set to the current time """
         self.assertIsInstance(self.model.created_at, datetime)
-    
+
     def test_updated_at_is_current_time_after_save(self):
         """ Test if updated_at is set to the current time after save """
         initial_updated_at = self.model.updated_at
         self.model.save()
         self.assertNotEqual(initial_updated_at, self.model.updated_at)
         self.assertIsInstance(self.model.updated_at, datetime)
-    
+
     def test_delete_method(self):
         """ Test if delete method removes the instance from storage """
         models.storage.new(self.model)
@@ -152,7 +151,7 @@ class test_basemodel(unittest.TestCase):
         self.assertIn(key, models.storage.all())
         self.model.delete()
         self.assertNotIn(key, models.storage.all())
-    
+
     def test_to_dict_value(self):
         """Test that to_dict returns correct values"""
         time_f = "%Y-%m-%dT%H:%M:%S.%f"
@@ -169,7 +168,7 @@ class test_basemodel(unittest.TestCase):
             dict_base["updated_at"],
             instance.updated_at.strftime(time_f)
         )
-    
+
     @mock.patch("models.storage")
     def test_save(self, mock_storage):
         """test save and update at is working and storage call save"""

@@ -19,6 +19,8 @@ association_table = Table("place_amenity", Base.metadata,
                           Column("amenity_id", String(60),
                                  ForeignKey("amenities.id"),
                                  primary_key=True, nullable=False))
+
+
 class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = 'places'
@@ -49,6 +51,7 @@ class Place(BaseModel, Base):
                 if review.place_id == self.id:
                     reviewList.append(review)
             return reviewList
+
         @property
         def amenities(self):
             """
@@ -60,7 +63,7 @@ class Place(BaseModel, Base):
                 if amenity.id in self.amenity_ids:
                     amenityList.append(amenity)
             return amenityList
-        
+
         @amenities.setter
         def amenities(self, value):
             if type(value) == Amenity:

@@ -17,15 +17,16 @@ class State(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """Init inherited"""
         super().__init__(*args, **kwargs)
-    
+
     if models.storage_type != "db":
         @property
         def cities(self):
             """
-            getter attribute cities that returns the list of City instances with state_id equals to the current State.id =>
+            getter attribute cities that returns the list of City instances
+            withstate_id equals to the current State.id =>
             It will be the FileStorage relationship between State and City
             """
-            list_city =[]
+            list_city = []
             all_inst_c = models.storage.all(City)
             for value in all_inst_c.values():
                 if value.state_id == self.id:

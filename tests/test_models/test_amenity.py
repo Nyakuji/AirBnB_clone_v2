@@ -17,6 +17,7 @@ class test_Amenity(test_basemodel):
         """Test for name attribute"""
         new = self.value()
         self.assertNotEqual(type(new.name), str)
+
     def test_to_dictAmenity(self):
         """test to dict method with Amenity and the type and content"""
         insta = Amenity()

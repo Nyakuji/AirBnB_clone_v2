@@ -22,6 +22,7 @@ class test_City(test_basemodel):
         """Test for name attribute"""
         new = self.value()
         self.assertNotEqual(type(new.name), str)
+
     def test_to_dictcity(self):
         """test to dict method with city and the type and content"""
         city = City()

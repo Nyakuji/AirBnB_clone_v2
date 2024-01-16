@@ -53,6 +53,5 @@ class test_User(test_basemodel):
             dict_con["created_at"],
             user.created_at.strftime(time_format)
         )
-        self.assertEqual(
-            dict_con["updated_at"],
-            user.updated_at.strftime(time_format))    
+        self.assertEqual(dict_con["updated_at"],
+                         user.updated_at.strftime(time_format))

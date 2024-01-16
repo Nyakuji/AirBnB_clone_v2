@@ -15,6 +15,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from os import getenv
 
+
 class DBStorage:
     """
     This class manage DB storage for AirBnb
@@ -58,7 +59,7 @@ class DBStorage:
                 key = instance.__class__.__name__ + '.' + instance.id
                 d[key] = instance
         return d
-    
+
     def new(self, obj):
         """
         add the object to the current database session
@@ -70,14 +71,14 @@ class DBStorage:
          commit all changes of the current database session
         """
         self.__session.commit()
-    
+
     def delete(self, obj=None):
         """
         delete from the current database
         """
         if obj is not None:
             self.__session.delete(obj)
-    
+
     def reload(self):
         """
         create all tables in the database (feature of SQLAlchemy)
@@ -86,13 +87,10 @@ class DBStorage:
         session_db = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(session_db)
         self.__session = Session()
-    
+
     def close(self):
         """
         Closing the session
         """
         self.reload()
         self.__sesssion.close()
-
-
-

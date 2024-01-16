@@ -27,7 +27,7 @@ class test_review(test_basemodel):
         """Test for text attribute"""
         new = self.value()
         self.assertNotEqual(type(new.text), str)
-    
+
     def test_to_dictReview(self):
         """test to dict method with Review and the type and content"""
         review = Review()
