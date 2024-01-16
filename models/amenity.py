@@ -13,6 +13,6 @@ class Amenity(BaseModel, Base):
     place_amenities = relationship("Place", secondary="place_amenity",
                                    viewonly=False)
     
-    def __init__(self. *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Init for inherited"""
         super().__init__(*args, **kwargs)
