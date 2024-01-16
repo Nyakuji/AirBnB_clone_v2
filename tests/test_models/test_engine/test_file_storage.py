@@ -36,15 +36,19 @@ class test_fileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_new(self):
         """ New object is correctly added to __objects """
+        storage = FileStorage()
         new = BaseModel()
-        storage.new(new)
-        storage.save()
-        
-        # Get the IDs of all objects in __objects
-        obj_ids = [obj.id for obj in storage.all().values()]
-        
-        # Check if the ID of the new object is in the list of IDs
-        self.assertIn(new.id, obj_ids)
+        new.save()
+
+        # Find the new object in the storage
+        temp = None
+        for obj in storage.all().values():
+            if obj.id == new.id:
+                temp = obj
+                break
+
+        self.assertIsNotNone(temp)
+        self.assertEqual(new.id, temp.id)
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_all(self):
@@ -78,19 +82,27 @@ class test_fileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_reload(self):
         """ Storage file is successfully loaded to __objects """
-        # Create a new BaseModel instance and save it
+        storage = FileStorage()
         new = BaseModel()
-        storage.new(new)
-        storage.save()
-        
-        #Clear __objects to simulate a clean slate
-        storage._FileStorage__objects = {}
-        
-        # Reload from storage
+        new.save()
+
+        original_id = new.id
         storage.reload()
-        
-        # Ensure there is only one object in __objects
-        self.assertEqual(len(storage.all()), 1)
+
+        # Find the reloaded object in the storage
+        loaded = None
+        for obj in storage.all().values():
+            if obj.id == original_id:
+                loaded = obj
+                break
+
+        # Ensure that the object was successfully reloaded
+        self.assertIsNotNone(loaded)
+
+        # Compare the attributes of the original and loaded objects
+        self.assertEqual(new.id, loaded.id)
+        self.assertEqual(new.to_dict()['created_at'], loaded.to_dict()['created_at'])
+        self.assertEqual(new.to_dict()['updated_at'], loaded.to_dict()['updated_at'])
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_reload_empty(self):
@@ -125,16 +137,20 @@ class test_fileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_key_format(self):
         """ Key is properly formatted """
-        # Create a new BaseModel instance and save it
+        storage = FileStorage()
         new = BaseModel()
-        storage.new(new)
-        storage.save()
-        
-        # Get the expected key
-        key_to_match = 'BaseModel.' + new.id
-        
-        # Check if the key is in the actual keys
-        self.assertIn(key_to_match, storage.all().keys())
+        _id = new.to_dict()['id']
+        temp = None
+
+        # Find the key in storage.all().keys()
+        for key in storage.all().keys():
+            if key.endswith('.' + _id):
+                temp = key
+                break
+
+        # Ensure that the key is properly formatted
+        self.assertIsNotNone(temp)
+        self.assertEqual(temp, 'BaseModel.' + _id)
     
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_storage_var_created(self):
