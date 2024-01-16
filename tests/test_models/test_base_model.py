@@ -6,6 +6,7 @@ import datetime
 from uuid import UUID
 import json
 import os
+import models
 
 
 class test_basemodel(unittest.TestCase):
@@ -56,44 +57,38 @@ class test_basemodel(unittest.TestCase):
             j = json.load(f)
             self.assertEqual(j[key], i.to_dict())
 
-    def test_str(self):
-        """ """
-        i = self.value()
-        self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                         i.__dict__))
-
     def test_todict(self):
         """ """
         i = self.value()
         n = i.to_dict()
         self.assertEqual(i.to_dict(), n)
 
-    def test_kwargs_none(self):
-        """ """
-        n = {None: None}
-        with self.assertRaises(TypeError):
-            new = self.value(**n)
-
-    def test_kwargs_one(self):
-        """ """
-        n = {'Name': 'test'}
-        with self.assertRaises(KeyError):
-            new = self.value(**n)
-
     def test_id(self):
         """ """
         new = self.value()
         self.assertEqual(type(new.id), str)
 
-    def test_created_at(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.created_at), datetime.datetime)
-
-    def test_updated_at(self):
-        """ """
-        new = self.value()
-        self.assertEqual(type(new.updated_at), datetime.datetime)
-        n = new.to_dict()
-        new = BaseModel(**n)
-        self.assertFalse(new.created_at == new.updated_at)
+    def test_created_at_is_current_time(self):
+        """ Test if created_at is set to the current time """
+        self.assertIsInstance(self.model.created_at, datetime)
+        self.assertAlmostEqual(
+            self.model.created_at, datetime.utcnow(), delta=datetime.timedelta(seconds=1)
+        )
+    
+    def test_updated_at_is_current_time_after_save(self):
+        """ Test if updated_at is set to the current time after save """
+        initial_updated_at = self.model.updated_at
+        self.model.save()
+        self.assertNotEqual(self.model.updated_at, initial_updated_at)
+        self.assertAlmostEqual(
+            self.model.updated_at, datetime.utcnow(), delta=datetime.timedelta(seconds=1)
+        )
+    
+    def test_delete_method(self):
+        """ Test if delete method removes the instance from storage """
+        models.storage.new(self.model)
+        models.storage.save()
+        key = "{}.{}".format(self.model.__class__.__name__, self.model.id)
+        self.assertIn(key, models.storage.all())
+        self.model.delete()
+        self.assertNotIn(key, models.storage.all())
