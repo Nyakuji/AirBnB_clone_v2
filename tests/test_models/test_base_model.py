@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """ """
 from models.base_model import BaseModel
 import unittest
@@ -19,8 +18,9 @@ class test_basemodel(unittest.TestCase):
         self.value = BaseModel
 
     def setUp(self):
-        """ """
-        pass
+        """set up for testcase """
+        self.model = BaseModel()
+        
 
     def tearDown(self):
         try:
