@@ -4,6 +4,7 @@ import unittest
 from datetime import datetime, timedelta
 from uuid import UUID
 import json
+import time
 from unittest import mock
 import os
 import models
@@ -89,7 +90,7 @@ class test_basemodel(unittest.TestCase):
             with self.subTest(attr=attr, typ=type_at):
                 self.assertIn(attr, instance.__dict__)
                 self.assertIs(type(instance.__dict__[attr]), type_at)
-        self.assertTrue(mock_storage.new.called)
+        self.assertFalse(mock_storage.new.called)
         self.assertEqual(instance.name, "Philip")
         self.assertEqual(instance.phone, 3838)
     
