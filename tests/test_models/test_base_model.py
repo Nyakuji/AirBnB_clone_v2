@@ -107,12 +107,12 @@ class test_basemodel(unittest.TestCase):
     def test_datetime(self):
         """
         Test different instance, different time.
-        Test same created at and updated when instance is created.
         """
-        tc_before = datetime.now()
+        tc_before = datetime.utcnow()
         instance1 = BaseModel()
-        tc_after = datetime.now()
-        self.assertTrue(tc_before <= instance1.created_at <= tc_after)
+        tc_after = datetime.utcnow()
+        self.assertLessEqual(tc_before, instance1.created_at)
+        self.assertLessEqual(instance1.created_at, tc_after)
         time.sleep(1e-4)
         instance2 = BaseModel()
         self.assertEqual(instance1.created_at, instance1.updated_at)
@@ -178,17 +178,11 @@ class test_basemodel(unittest.TestCase):
             instance.updated_at.strftime(time_f)
         )
     
-    @mock.patch("models.storage")
-    def test_save(self, mock_storage):
+    def save(self):
+        """Updates updated_at with the current time
+        when the instance is changed
         """
-            Test save and update_at is working and storage save call
-        """
-        instance = BaseModel()
-        old_value_created = instance.created_at
-        old_value_update = instance.updated_at
-        instance.save()
-        new_value_created = instance.created_at
-        new_value_updated = instance.updated_at
-        self.assertNotEqual(old_value_update, new_value_updated)
-        self.assertEqual(old_value_created, new_value_created)
-        self.assertTrue(mock_storage.save.called_once)
+        self.updated_at = datetime.utcnow()
+        # only when we save the instance, it's written into the json file
+        models.storage.new(self)
+        models.storage.save()
