@@ -12,23 +12,25 @@ class State(BaseModel, Base):
     """ State class """
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
-    cities = relationship("City", backref="state")
 
     def __init__(self, *args, **kwargs):
         """Init inherited"""
         super().__init__(*args, **kwargs)
-
-    if models.storage_type != "db":
+    
+    #For DBStorage
+    if models.storage_type == "db":
+        cities = relationship('City', backref='state',
+                              cascade='all,delete-orphan')
+        
+    #For FileStorage
+    else:
         @property
         def cities(self):
-            """
-            getter attribute cities that returns the list of City instances
-            withstate_id equals to the current State.id =>
-            It will be the FileStorage relationship between State and City
-            """
-            list_city = []
-            all_inst_c = models.storage.all(City)
-            for value in all_inst_c.values():
-                if value.state_id == self.id:
-                    list_city.append(value)
-            return list_city
+            """Getter attribute for cities in FileStorage"""
+            city_list = []
+            all_cities = models.storage.all(City)
+            for city in all_cities.values():
+                if city.state_id == self.id:
+                    city_list.append(city)
+            return city_list
+        
