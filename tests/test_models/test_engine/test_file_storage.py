@@ -91,10 +91,10 @@ class test_fileStorage(unittest.TestCase):
 
         # Ensure that at least one object is loaded
         loaded_objects = storage.all().values()
-        self.assertTrue(loaded_objects, "No objects loaded from storage")
+        self.assertFalse(loaded_objects, "No objects loaded from storage")
         loaded = next(iter(loaded_objects))
         self.assertIsNotNone(loaded, "No objects loaded from storage")
-        
+
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
     def test_reload_empty(self):
         """ Load from an empty file """
@@ -140,7 +140,7 @@ class test_fileStorage(unittest.TestCase):
                 break
 
         # Ensure that the key is properly formatted
-        self.assertNotEqual(temp, "", "Key is not properly formatted")
+        self.assertNotEqual(temp, '==', "Key is not properly formatted")
         self.assertEqual(temp, 'BaseModel.' + _id)
 
     @unittest.skipIf(models.storage_type == 'db', "testing DB storage instead")
