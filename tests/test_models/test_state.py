@@ -19,10 +19,7 @@ class test_state(test_basemodel):
         self.assertNotEqual(type(new.name), str)
 
     def test_to_dictstate(self):
-        """
-            test to dict method with state and the type
-            and content
-        """
+        """test to dict method with state and the type and content"""
         state = State()
         dict_cont = state.to_dict()
         self.assertEqual(type(dict_cont), dict)
@@ -30,9 +27,7 @@ class test_state(test_basemodel):
             self.assertTrue("__class__" in dict_cont)
 
     def test_dict_value(self):
-        """
-            test the returned dictionar values
-        """
+        """test the returned dictionar values"""
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         state = State()
         dict_con = state.to_dict()

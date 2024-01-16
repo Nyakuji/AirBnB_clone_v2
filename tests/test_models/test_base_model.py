@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Test Case For Base Model """
 from models.base_model import BaseModel
 import unittest
@@ -31,19 +32,19 @@ class test_basemodel(unittest.TestCase):
             pass
 
     def test_default(self):
-        """ """
+        """Test for default"""
         i = self.value()
         self.assertEqual(type(i), self.value)
 
     def test_kwargs(self):
-        """ """
+        """Test for kwargs"""
         i = self.value()
         copy = i.to_dict()
         new = BaseModel(**copy)
         self.assertFalse(new is i)
 
     def test_kwargs_int(self):
-        """ """
+        """Test for kwargs_int"""
         i = self.value()
         copy = i.to_dict()
         copy.update({1: 2})
@@ -60,21 +61,19 @@ class test_basemodel(unittest.TestCase):
             self.assertEqual(j[key], i.to_dict())
 
     def test_todict(self):
-        """ """
+        """Test for todict"""
         i = self.value()
         n = i.to_dict()
         self.assertEqual(i.to_dict(), n)
 
     def test_id(self):
-        """ """
+        """Test for id attribute"""
         new = self.value()
         self.assertEqual(type(new.id), str)
     
     @mock.patch('models.storage')
     def test_instance(self, mock_storage):
-        """
-            Testing Base Model Class
-        """
+        """Testing Base Model Class"""
         instance = BaseModel()
         self.assertIs(type(instance), BaseModel)
         instance.name = "Philip"
@@ -95,9 +94,7 @@ class test_basemodel(unittest.TestCase):
         self.assertEqual(instance.phone, 3838)
     
     def test_uuid(self):
-        """
-            Test different UUID for different instances
-        """
+        """Test different UUID for different instances"""
         instance1 = BaseModel()
         instance2 = BaseModel()
         self.assertNotEqual(instance1.id, instance2.id)
@@ -106,9 +103,7 @@ class test_basemodel(unittest.TestCase):
             self.assertIs(type(uuid), str)
     
     def test_datetime(self):
-        """
-        Test different instance, different time.
-        """
+        """Test different instance, different time."""
         tc_before = datetime.utcnow()
         instance1 = BaseModel()
         tc_after = datetime.utcnow()
@@ -121,9 +116,7 @@ class test_basemodel(unittest.TestCase):
         self.assertNotEqual(instance1.updated_at, instance2.updated_at)
     
     def test_to_dict(self):
-        """
-            Test to_dict method in base model
-        """
+        """Test to_dict method in base model"""
         instance = BaseModel()
         instance.name = "Philip"
         instance.num = 38
@@ -161,9 +154,7 @@ class test_basemodel(unittest.TestCase):
         self.assertNotIn(key, models.storage.all())
     
     def test_to_dict_value(self):
-        """
-            Test that to_dict returns correct values
-        """
+        """Test that to_dict returns correct values"""
         time_f = "%Y-%m-%dT%H:%M:%S.%f"
         instance = BaseModel()
         dict_base = instance.to_dict()
@@ -181,10 +172,7 @@ class test_basemodel(unittest.TestCase):
     
     @mock.patch("models.storage")
     def test_save(self, mock_storage):
-        """
-            test save and update at is working and storage call
-            save
-        """
+        """test save and update at is working and storage call save"""
         instance = BaseModel()
         old_value_created = instance.created_at
         old_value_update = instance.updated_at

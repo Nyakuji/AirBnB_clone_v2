@@ -33,21 +33,8 @@ class test_User(test_basemodel):
         new = self.value()
         self.assertNotEqual(type(new.password), str)
 
-    def issub_class(self):
-        """
-            test if User class is sub class of base model
-        """
-        user = User()
-        self.assertIsInstance(user, BaseModel)
-        self.assertTrue(hasattr(user, "id"))
-        self.assertTrue(hasattr(user, "created_at"))
-        self.assertTrue(hasattr(user, "update_at"))
-
     def test_to_dictUser(self):
-        """
-            test to dict method with user and the type
-            and content
-        """
+        """test to dict method with user and the type and content"""
         user = User()
         dict_cont = user.to_dict()
         self.assertEqual(type(dict_cont), dict)
@@ -55,9 +42,7 @@ class test_User(test_basemodel):
             self.assertTrue("__class__" in dict_cont)
 
     def test_dict_value(self):
-        """
-            test the returned dictionar values
-        """
+        """test the returned dictionar values"""
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         user = User()
         dict_con = user.to_dict()

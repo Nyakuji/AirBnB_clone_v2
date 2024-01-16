@@ -23,10 +23,7 @@ class test_City(test_basemodel):
         new = self.value()
         self.assertNotEqual(type(new.name), str)
     def test_to_dictcity(self):
-        """
-            test to dict method with city and the type
-            and content
-        """
+        """test to dict method with city and the type and content"""
         city = City()
         dict_cont = city.to_dict()
         self.assertEqual(type(dict_cont), dict)
@@ -34,9 +31,7 @@ class test_City(test_basemodel):
             self.assertTrue("__class__" in dict_cont)
 
     def test_dict_value(self):
-        """
-            test the returned dictionar values
-        """
+        """test the returned dictionary values"""
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         city = City()
         dict_con = city.to_dict()

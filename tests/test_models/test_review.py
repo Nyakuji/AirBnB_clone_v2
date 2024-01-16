@@ -29,10 +29,7 @@ class test_review(test_basemodel):
         self.assertNotEqual(type(new.text), str)
     
     def test_to_dictReview(self):
-        """
-            test to dict method with Review and the type
-            and content
-        """
+        """test to dict method with Review and the type and content"""
         review = Review()
         dict_cont = review.to_dict()
         self.assertEqual(type(dict_cont), dict)
@@ -40,9 +37,7 @@ class test_review(test_basemodel):
             self.assertTrue("__class__" in dict_cont)
 
     def test_dict_value(self):
-        """
-            test the returned dictionary values
-        """
+        """test the returned dictionary values"""
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         review = Review()
         dict_con = review.to_dict()

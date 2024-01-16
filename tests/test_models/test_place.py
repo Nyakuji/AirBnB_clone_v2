@@ -69,10 +69,7 @@ class test_Place(test_basemodel):
         self.assertEqual(type(new.amenity_ids), list)
 
     def test_to_dictPlace(self):
-        """
-            test to dict method with Place and the type
-            and content
-        """
+        """test to dict method with Place and the type and content"""
         place = Place()
         dict_cont = place.to_dict()
         self.assertEqual(type(dict_cont), dict)
@@ -80,9 +77,7 @@ class test_Place(test_basemodel):
             self.assertTrue("__class__" in dict_cont)
 
     def test_dict_value(self):
-        """
-            test the returned dictionar values
-        """
+        """test the returned dictionary values"""
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         place = Place()
         dict_con = place.to_dict()

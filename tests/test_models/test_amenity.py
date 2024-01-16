@@ -18,10 +18,7 @@ class test_Amenity(test_basemodel):
         new = self.value()
         self.assertNotEqual(type(new.name), str)
     def test_to_dictAmenity(self):
-        """
-            test to dict method with Amenity and the type
-            and content
-        """
+        """test to dict method with Amenity and the type and content"""
         insta = Amenity()
         dict_cont = insta.to_dict()
         self.assertEqual(type(dict_cont), dict)
@@ -29,9 +26,7 @@ class test_Amenity(test_basemodel):
             self.assertTrue("__class__" in dict_cont)
 
     def test_dict_value(self):
-        """
-            test the returned dictionar values
-        """
+        """test the returned dictionar values"""
         time_format = "%Y-%m-%dT%H:%M:%S.%f"
         insta = Amenity()
         dict_con = insta.to_dict()
