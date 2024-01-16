@@ -26,39 +26,36 @@ class DBStorage:
     all_classes = ["State", "City", "User", "Place", "Review"]
 
     def __init__(self):
-        """Init __engine based on the Environment"""
-        HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
-        HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
-        HBNB_MYSQL_HOST = getenv('HBNB_MYSQL_HOST')
-        HBNB_MYSQL_DB = getenv('HBNB_MYSQL_DB')
-        HBNB_ENV = getenv('HBNB_ENV')
-        exec_db = 'mysql+mysqldb://{}:{}@{}/{}'.format(
-                                            HBNB_MYSQL_USER,
-                                            HBNB_MYSQL_PWD,
-                                            HBNB_MYSQL_HOST,
-                                            HBNB_MYSQL_DB
-                                                )
-        self.__engine = create_engine(exec_db, pool_pre_ping=True)
-        if HBNB_ENV == 'test':
+        """Initialize DBStorage instance"""
+        user = getenv('HBNB_MYSQL_USER')
+        pwd = getenv('HBNB_MYSQL_PWD')
+        host = getenv('HBNB_MYSQL_HOST', default='localhost')
+        db = getenv('HBNB_MYSQL_DB')
+        env = getenv('HBNB_ENV')
+
+        self.__engine = create_engine(
+            'mysql+mysqldb://{}:{}@{}/{}'.
+            format(user, pwd, host, db),
+            pool_pre_ping=True
+        )
+
+        if env == 'test':
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """
-        query on the current database session (self.__session)
-        all objects depending of the class name (argument cls)
-        """
-        d = {}
-        if cls is None:
-            for cl in self.all_classes:
-                cl = eval(cl)
-                for instance in self.__session.query(cl).all():
-                    key = instance.__class__.__name__ + '.' + instance.id
-                    d[key] = instance
+        """Query on the current database session all objects depending on the class name"""
+        from models import classes
+
+        objects = {}
+        if cls:
+            query_result = self.__session.query(classes[cls]).all()
         else:
-            for instance in self.__session.query(cls).all():
-                key = instance.__class__.__name__ + '.' + instance.id
-                d[key] = instance
-        return d
+            for cls in classes.values():
+                query_result = self.__session.query(cls).all()
+                for obj in query_result:
+                    key = '{}.{}'.format(type(obj).__name__, obj.id)
+                    objects[key] = obj
+        return objects
 
     def new(self, obj):
         """
@@ -76,7 +73,7 @@ class DBStorage:
         """
         delete from the current database
         """
-        if obj is not None:
+        if obj:
             self.__session.delete(obj)
 
     def reload(self):
@@ -92,5 +89,4 @@ class DBStorage:
         """
         Closing the session
         """
-        self.reload()
-        self.__sesssion.close()
+        self.__session.remove()
