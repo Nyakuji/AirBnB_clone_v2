@@ -2,6 +2,7 @@
 """ Console Module """
 import cmd
 import sys
+import shlex
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -41,47 +42,43 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def _create_dict_instance(self, line):
-        """
-            Parse input and convert it to
-            Dict for do_create
-        """
-        new_dict = {}
-        for item in line:
-            if "=" in item:
-                # creating list from value and key
-                # if "=" found
-                new_arg = item.split("=", 1)
-                key = new_arg[0]
-                value = new_arg[1]
-                if value[0] == '"' == value[-1]:
-                    value = value.replace('"', "").replace("_", " ")
-                else:
-                    try:
-                        value = int(value)
-                    except Exception:
-                        try:
-                            value = float(value)
-                        except Exception:
-                            continue
-                new_dict[key] = value
-        return new_dict
-
-    def do_create(self, args):
-        """ Create an object of any class"""
-        args = args.split()
-        if not args[0]:
+    def do_create(self, arg):
+        """Create an object of any class"""
+        if not arg:
             print("** class name missing **")
             return
-        elif args[0] not in HBNBCommand.classes:
+
+        args = shlex.split(arg)
+        class_name = args[0]
+
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        # creating a dict from args
-        new_dict = self._create_dict_instance(args[1:])
-        # sending args on form of kwargs
-        new_instance = HBNBCommand.classes[args[0]](**new_dict)
-        print(new_instance.id)
+
+        # Extract parameters in the form of key=value from the argument
+        params = {}
+        for param in args[1:]:
+            try:
+                key, value = param.split('=')
+                key = key.replace('_', ' ')
+                value = value.replace('\\"', '"')
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
+                elif '.' in value:
+                    value = float(value)
+                else:
+                    value = int(value)
+                params[key] = value
+            except ValueError:
+                print(f"Error parsing parameter: {param}. Skipping.")
+
+        # Create an instance of the specified class with the provided parameters
+        new_instance = HBNBCommand.classes[class_name](**params)
+
+        # Save the new instance
         new_instance.save()
+
+        print(new_instance.id)
 
     def do_count(self, args):
         """Count current number of class instances"""
