@@ -1,18 +1,16 @@
-#!/usr/bin/python3
-""" Function that compress a folder """
+#!/usr/bin/env python3
+""" Function that compresses a folder """
+from fabric.api import *
 from datetime import datetime
-from fabric.api import local
 import os
-
-
 def do_pack():
-    try:
-        if not os.path.exists("versions"):
-            local('mkdir versions')
-        t = datetime.now()
-        f = "%Y%m%d%H%M%S"
-        archive_path = 'versions/web_static_{}.tgz'.format(t.strftime(f))
-        local('tar -cvzf {} web_static'.format(archive_path))
-        return archive_path
-    except:
-        return None
+    local('sudo mkdir -p versions')
+    t = datetime.now()
+    t_string = t.strftime('%Y%m%d%H%M%S')
+
+    local(f'sudo tar -cvzf versions/web_static_{t_string}.tgz web_static')
+    f_path = f'versions/web_static_{t_string}.tgz'
+    f_size = os.path.getsize(f_path)
+    print(f'web_static packed: {f_path} -> {f_size}')
+    
+    return f_path
