@@ -1,8 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """ Function that compresses a folder """
-from fabric.api import *
+from fabric.api import local
 from datetime import datetime
 import os
+
+
 def do_pack():
     local('sudo mkdir -p versions')
     t = datetime.now()
@@ -11,6 +13,6 @@ def do_pack():
     local(f'sudo tar -cvzf versions/web_static_{t_string}.tgz web_static')
     f_path = f'versions/web_static_{t_string}.tgz'
     f_size = os.path.getsize(f_path)
-    print(f'web_static packed: {f_path} -> {f_size}')
-    
+    print(f'web_static packed: {f_path} -> {f_size}Bytes')
+
     return f_path
