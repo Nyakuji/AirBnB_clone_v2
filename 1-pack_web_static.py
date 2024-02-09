@@ -1,18 +1,23 @@
 #!/usr/bin/python3
-""" Function that compresses a folder """
-from fabric.api import local
+"""
+ generates a .tgz archive from the contents
+of the web_static folder
+"""
+
 from datetime import datetime
-import os
+from fabric.api import local
+import os.path
 
 
 def do_pack():
-    local('sudo mkdir -p versions')
-    t = datetime.now()
-    t_string = t.strftime('%Y%m%d%H%M%S')
-
-    local(f'sudo tar -cvzf versions/web_static_{t_string}.tgz web_static')
-    f_path = f'versions/web_static_{t_string}.tgz'
-    f_size = os.path.getsize(f_path)
-    print(f'web_static packed: {f_path} -> {f_size}Bytes')
-
-    return f_path
+    """
+    generate tgz archive using fabric
+    """
+    date = datetime.now().strftime("%Y%m%d%H%M%S")
+    file_path = "versions/web_static_{}.tgz".format(date)
+    if os.path.isdir("versions") is False:
+        local(" mkdir versions")
+    local('tar -cvzf ' + file_path + ' web_static')
+    if os.path.exists(file_path):
+        return file_path
+    return None
