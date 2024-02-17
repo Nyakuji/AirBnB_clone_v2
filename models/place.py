@@ -43,7 +43,7 @@ class Place(BaseModel, Base):
         """Inititalize Place"""
         super().__init__(*args, **kwargs)
 
-    if models.storage_type != "db":
+    if models.storage_t != "db":
         @property
         def reviews(self):
             reviewList = []

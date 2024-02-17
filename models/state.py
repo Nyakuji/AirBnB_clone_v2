@@ -18,7 +18,7 @@ class State(BaseModel, Base):
         super().__init__(*args, **kwargs)
     
     #For DBStorage
-    if models.storage_type == "db":
+    if models.storage_t == "db":
         cities = relationship('City', backref='state',
                               cascade='all,delete-orphan')
         
